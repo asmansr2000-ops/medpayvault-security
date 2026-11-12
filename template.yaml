@@ -79,3 +79,25 @@ Resources:
             CloudWatchMetricsEnabled: true
             MetricName: RateLimitMetric
             SampledRequestsEnabled: true
+# 6. IAM Least-Privilege Role for Lambda (تطبيق صلاحيات الـ RBAC الضيقة)
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: MedPayVaultLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
