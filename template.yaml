@@ -101,3 +101,17 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: arn:aws:logs:*:*:*
+MedPayVaultSecureRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: "medpayvault-secure-container-repo"
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      ImageTagMutability: MUTABLE
+      EncryptionConfiguration:
+        EncryptionType: AES256
+
+Outputs:
+  SecureRepositoryUri:
+    Description: "Secure ECR Repository URI"
+    Value: !GetAtt MedPayVaultSecureRepo.RepositoryUri
