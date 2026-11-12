@@ -53,3 +53,29 @@ Resources:
       ExplicitAuthFlows:
         - ALLOW_USER_SRP_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
+# 5. AWS WAFv2 Web ACL (لتطبيق قواعد الحماية و Rate Limiting)
+  WebACL:
+    Type: AWS::WAFv2::WebACL
+    Properties:
+      Name: MedPayVaultWAF
+      Scope: REGIONAL
+      DefaultAction:
+        Allow: {}
+      VisibilityConfig:
+        CloudWatchMetricsEnabled: true
+        MetricName: WebACLMetrics
+        SampledRequestsEnabled: true
+      Rules:
+        # Rate Limiting Rule (تحديد عدد الطلبات لحماية السيرفرلس)
+        - Name: RateLimitRule
+          Priority: 1
+          Statement:
+            RateBasedStatement:
+              Limit: 2000
+              AggregateKeyType: IP
+          Action:
+            Block: {}
+          VisibilityConfig:
+            CloudWatchMetricsEnabled: true
+            MetricName: RateLimitMetric
+            SampledRequestsEnabled: true
